@@ -1,4 +1,6 @@
 <%@page import="java.sql.*"%>
+<%@page import ="javax.naming.*" %>
+<%@page import ="javax.sql.*" %>
 <%@page import="java.io.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -7,22 +9,61 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Breakfast</title>
+<style>
+body{
+    background-image: url("img/cel-lisboa-60315-unsplash.jpg");
+    background-size: cover;
+}
+table {
+    width: 50%;
+    background:rgba(0,0,0,.6);
+    color: white;
+    margin-left:200px;
+	margin-top:100px;
+}
+th {
+    background-color: red;
+    color: white;
+}
+input[type=submit]{
+    background-color: orange;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+input[type=submit]:hover{
+background-color: grey
+}
+a:link, a:visited {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    float: right;
+}
+a:hover, a:active {
+    background-color: black;
+}
+</style>
 </head>
 <body>
-<form action="brcheckout">
+<form action="brcheckout" method="post">
 <table border="1">
 <tr>
-<td>Name</td>
-<td>Cost</td>
-<td>Select No. of Plates</td>
+<th>Name</th>
+<th>Cost</th>
+<th>Select No. of Plates</th>
 </tr>
 <%
 try{
-Class.forName("com.mysql.cj.jdbc.Driver");		
-String url="jdbc:mysql://localhost:3306/restaurant";
-String user="root";
-String pass="1234";
-Connection con=DriverManager.getConnection(url,user,pass);
+	Context ctx = new InitialContext();
+    DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/vishnu");
+    Connection con = ds.getConnection();
 
 String sql="Select * from breakfast";
 PreparedStatement ps=con.prepareStatement(sql);
@@ -47,17 +88,15 @@ while(rs.next())
 			<tr>
 			<td><%=name%><% names[i]=name;%></td>
 			<td><%=cost %></td>
-			<td><input type="number" name="num"></td>
+			<td><input type="text" name="num" id="num" autocomplete="off" required/><br>
+<span id = "inum" class="text-danger"> </span><br></td>
 			</tr>
 			<%
 		}
 	}
 
 }
-for (int i = 0; i < select.length; i++)
-{
-	System.out.println(names[i]);
-}
+
 for (int i = 0; i < select.length; i++)
 {
 	%>
@@ -74,11 +113,13 @@ catch (Exception e)
 
 %>
 </table>
-
+<br>
 <input type="submit" value="Checkout">
 </form>
-<form action="logout">
-<input type="submit" value="Logout" >
+<a href="logout">Logout</a>
+<form action="customer_home.jsp">
+<input type="submit" value="cancel" >
 </form><br><br>
+
 </body>
 </html>

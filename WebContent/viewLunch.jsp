@@ -1,5 +1,7 @@
 <%@page import="java.sql.*"%>
 <%@page import="java.io.*"%>
+<%@page import ="javax.naming.*" %>
+<%@page import ="javax.sql.*" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -7,22 +9,63 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Lunch Menu</title>
+<style>
+body{
+    background-image: url("img/Lunch.jpg");
+    background-size: cover;
+}
+table {
+    width: 50%;
+    background:rgba(0,0,0,.6);
+    color: white;
+    margin-left:200px;
+	margin-top:100px;
+}
+th {
+    background-color: red;
+    color: white;
+}
+input[type=submit]{
+    background-color: orange;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+input[type=submit]:hover{
+background-color: grey
+}
+a:link, a:visited {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    float: right;
+}
+a:hover, a:active {
+    background-color: black;
+}
+</style>
 </head>
 <body>
+
+<a href="logout">Logout</a>
 <form action="viewLunch.jsp" method="get">
 <table border="1">
 <tr>
-<td>Name</td>
-<td>Cost</td>
+<th>Name</th>
+<th>Cost</th>
 </tr>
 <%
 try{
 	int cust_id=(Integer)session.getAttribute("cust_id");
-Class.forName("com.mysql.cj.jdbc.Driver");		
-String url="jdbc:mysql://localhost:3306/restaurant";
-String user="root";
-String pass="1234";
-Connection con=DriverManager.getConnection(url,user,pass);
+	Context ctx = new InitialContext();
+    DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/vishnu");
+    Connection con = ds.getConnection();
 String sql="Select * from lunch";
 PreparedStatement ps=con.prepareStatement(sql);
 ResultSet rs1=ps.executeQuery();
@@ -54,10 +97,9 @@ catch (Exception e)
 </table>
 
 
-</form>
-<a href="ViewMenu.jsp">go back</a>
-<form action="logout">
-<input type="submit" value="Logout" >
+</form><br>
+<form action="ViewMenu.jsp">
+<input type="submit" value="go back" >
 </form><br><br>
 </body>
 </html>

@@ -11,6 +11,13 @@
 String str=(String)request.getAttribute("str");
 out.println(str);
 %>
-
+<br>
+<form action="logout">
+<input type="submit" value="Logout" style="height:20px;width:100px;float:right" >
+</form>
+<br>
+<form action="customer_home.jsp">
+<input type="submit" value="Home">
+</form>
 </body>
 </html>
